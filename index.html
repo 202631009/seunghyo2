@@ -1,5 +1,740 @@
-# Re-generate name compatibility file or display code content
-with open("name_compatibility_test.html", "r", encoding="utf-8") as f:
-    code_text = f.read()
+html_code = """<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>파워계획표 - AI 하루 계획 생성기</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #4F46E5;
+            --primary-hover: #4338CA;
+            --primary-light: #EEF2FF;
+            --secondary: #10B981;
+            --dark: #0F172A;
+            --gray-900: #0F172A;
+            --gray-800: #1E293B;
+            --gray-700: #334155;
+            --gray-600: #475569;
+            --gray-500: #64748B;
+            --gray-400: #94A3B8;
+            --gray-300: #CBD5E1;
+            --gray-200: #E2E8F0;
+            --gray-100: #F1F5F9;
+            --gray-50: #F8FAFC;
+            --accent: #F59E0B;
+            --radius-lg: 16px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        }
 
-print("File verified.")
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--gray-50);
+            color: var(--gray-800);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header / Navbar */
+        header {
+            background-color: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--gray-200);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .logo i {
+            font-size: 1.6rem;
+            color: var(--accent);
+        }
+
+        .badge {
+            background-color: var(--primary-light);
+            color: var(--primary);
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Main Container */
+        main {
+            flex: 1;
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 2.5rem 1.5rem;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--gray-900);
+            letter-spacing: -0.02em;
+            margin-bottom: 0.75rem;
+        }
+
+        .hero h1 span {
+            background: linear-gradient(135deg, var(--primary) 0%, #818CF8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            color: var(--gray-600);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* App Layout Grid */
+        .app-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        @media (min-width: 900px) {
+            .app-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        /* Card Component */
+        .card {
+            background: #ffffff;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--gray-200);
+            box-shadow: var(--shadow);
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            border-bottom: 1px solid var(--gray-100);
+            padding-bottom: 1rem;
+        }
+
+        .card-header i {
+            font-size: 1.25rem;
+            color: var(--primary);
+            background: var(--primary-light);
+            padding: 0.6rem;
+            border-radius: var(--radius-md);
+        }
+
+        .card-header h2 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--gray-900);
+        }
+
+        /* Form Elements */
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-group label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--gray-700);
+        }
+
+        .time-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        input[type="time"], textarea {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 1px solid var(--gray-300);
+            border-radius: var(--radius-md);
+            font-size: 0.95rem;
+            color: var(--gray-800);
+            background-color: #fff;
+            transition: all 0.2s ease;
+        }
+
+        input[type="time"]:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 140px;
+            line-height: 1.5;
+        }
+
+        /* Quick Tag Examples */
+        .presets {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: -0.25rem;
+        }
+
+        .preset-btn {
+            background: var(--gray-100);
+            border: 1px solid var(--gray-200);
+            color: var(--gray-600);
+            font-size: 0.8rem;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .preset-btn:hover {
+            background: var(--primary-light);
+            color: var(--primary);
+            border-color: rgba(79, 70, 229, 0.3);
+        }
+
+        /* Action Buttons */
+        .btn-submit {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius-md);
+            padding: 1rem;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+            transition: all 0.2s ease;
+            margin-top: 0.5rem;
+        }
+
+        .btn-submit:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(79, 70, 229, 0.35);
+        }
+
+        .btn-submit:active {
+            transform: translateY(0);
+        }
+
+        /* Schedule Timeline Output */
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem 1rem;
+            color: var(--gray-400);
+            text-align: center;
+            gap: 1rem;
+        }
+
+        .empty-state i {
+            font-size: 3.5rem;
+            color: var(--gray-300);
+        }
+
+        .timeline {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            position: relative;
+        }
+
+        .timeline-item {
+            display: flex;
+            gap: 1rem;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+
+        .timeline-item:not(:last-child)::before {
+            content: '';
+            position: absolute;
+            left: 55px;
+            top: 28px;
+            bottom: -8px;
+            width: 2px;
+            background-color: var(--gray-200);
+        }
+
+        .time-badge {
+            width: 110px;
+            flex-shrink: 0;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--primary);
+            background: var(--primary-light);
+            padding: 0.4rem 0.6rem;
+            border-radius: var(--radius-sm);
+            text-align: center;
+            height: fit-content;
+        }
+
+        .task-card {
+            flex: 1;
+            background: var(--gray-50);
+            border: 1px solid var(--gray-200);
+            border-left: 4px solid var(--primary);
+            border-radius: var(--radius-sm);
+            padding: 0.8rem 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+
+        .task-title {
+            font-weight: 700;
+            color: var(--gray-900);
+            font-size: 0.95rem;
+        }
+
+        .task-desc {
+            font-size: 0.85rem;
+            color: var(--gray-600);
+        }
+
+        .task-tag {
+            font-size: 0.75rem;
+            display: inline-block;
+            margin-top: 0.2rem;
+            color: var(--gray-500);
+            font-weight: 500;
+        }
+
+        /* Result Actions */
+        .result-actions {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+
+        .btn-secondary {
+            flex: 1;
+            background: #fff;
+            border: 1px solid var(--gray-300);
+            color: var(--gray-700);
+            padding: 0.75rem;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.4rem;
+            transition: all 0.2s ease;
+        }
+
+        .btn-secondary:hover {
+            background: var(--gray-100);
+            color: var(--gray-900);
+        }
+
+        /* Loading Spinner */
+        .loading {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem 1rem;
+            gap: 1rem;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--gray-200);
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem 1.5rem;
+            color: var(--gray-500);
+            font-size: 0.85rem;
+            border-top: 1px solid var(--gray-200);
+            background: #fff;
+            margin-top: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="nav-container">
+            <a href="#" class="logo">
+                <i class="fa-solid fa-bolt"></i>
+                <span>파워계획표</span>
+            </a>
+            <span class="badge">AI Powered</span>
+        </div>
+    </header>
+
+    <!-- Main Section -->
+    <main>
+        <div class="hero">
+            <h1>대충 말해도 <span>완벽한 하루 계획</span> 완성!</h1>
+            <p>원하는 활동과 자유로운 시간만 입력하세요. 스마트 알고리즘이 효율적인 맞춤형 스케줄을 즉시 생성합니다.</p>
+        </div>
+
+        <div class="app-grid">
+            <!-- Left: Input Form -->
+            <div class="card">
+                <div class="card-header">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                    <h2>계획 입력하기</h2>
+                </div>
+
+                <form id="planForm">
+                    <div class="form-group" style="margin-bottom: 1.25rem;">
+                        <label><i class="fa-regular fa-clock"></i> 사용 가능한 시간대</label>
+                        <div class="time-inputs">
+                            <div>
+                                <span style="font-size:0.8rem; color:var(--gray-500);">시작 시간</span>
+                                <input type="time" id="startTime" value="09:00" required>
+                            </div>
+                            <div>
+                                <span style="font-size:0.8rem; color:var(--gray-500);">종료 시간</span>
+                                <input type="time" id="endTime" value="22:00" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 1.25rem;">
+                        <label for="rawInput"><i class="fa-solid fa-list-check"></i> 오늘 하고 싶은 일 (자유롭게 입력)</label>
+                        <textarea id="rawInput" placeholder="예시:&#10;- 운동 1시간 하기&#10;- 점심 식사 및 휴식&#10;- 파이썬 코딩 공부 2시간&#10;- 장보기 30분&#10;- 카페에서 책 읽기" required></textarea>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 1.5rem;">
+                        <label style="font-size: 0.8rem; color: var(--gray-500);">💡 예시 문구 불러오기</label>
+                        <div class="presets">
+                            <button type="button" class="preset-btn" onclick="applyPreset('study')">📚 공부하는 날</button>
+                            <button type="button" class="preset-btn" onclick="applyPreset('rest')">🌿 쉬는 주말</button>
+                            <button type="button" class="preset-btn" onclick="applyPreset('work')">💼 열일 모드</button>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-submit">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                        파워 하루 계획표 생성
+                    </button>
+                </form>
+            </div>
+
+            <!-- Right: Schedule Output -->
+            <div class="card">
+                <div class="card-header">
+                    <i class="fa-solid fa-calendar-check"></i>
+                    <h2>오늘의 파워 계획표</h2>
+                </div>
+
+                <!-- Empty Initial State -->
+                <div id="emptyState" class="empty-state">
+                    <i class="fa-regular fa-calendar-plus"></i>
+                    <p>왼쪽에서 시간을 설정하고 계획을 입력한 후<br><b>[파워 하루 계획표 생성]</b> 버튼을 눌러보세요!</p>
+                </div>
+
+                <!-- Loading Spinner -->
+                <div id="loading" class="loading">
+                    <div class="spinner"></div>
+                    <p style="font-weight: 600; color: var(--gray-700);">최적의 하루 동선을 계산 중입니다...</p>
+                </div>
+
+                <!-- Result Timeline -->
+                <div id="resultContent" style="display: none;">
+                    <div class="timeline" id="timelineContainer">
+                        <!-- Timeline Items populated dynamically -->
+                    </div>
+
+                    <div class="result-actions">
+                        <button class="btn-secondary" onclick="copySchedule()">
+                            <i class="fa-regular fa-copy"></i> 텍스트 복사
+                        </button>
+                        <button class="btn-secondary" onclick="window.print()">
+                            <i class="fa-solid fa-print"></i> 인쇄 / PDF 저장
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>© 2026 파워계획표 (Power Planner). All rights reserved.</p>
+    </footer>
+
+    <!-- JavaScript Engine -->
+    <script>
+        // Preset examples
+        const presets = {
+            study: "운동 1시간하기\n점심 먹기\n알고리즘 공부 2시간\n영어 단어 외우기 1시간\n저녁 산책\n독서 45분",
+            rest: "늦잠 자기 및 브런치\n카페 가서 블로그 글 쓰기\n영화 한 편 보기\n방 청소 및 빨래\n맛있는 저녁 해먹기",
+            work: "이메일 확인 및 하루 정리 30분\n중요 프로젝트 기획서 작성 2시간\n팀 회의 및 점심식사\n고객사 미팅 준비\n운동 1시간"
+        };
+
+        function applyPreset(type) {
+            document.getElementById('rawInput').value = presets[type];
+        }
+
+        // Time helper functions
+        function timeToMinutes(timeStr) {
+            const [h, m] = timeStr.split(':').map(Number);
+            return h * 60 + m;
+        }
+
+        function minutesToTime(mins) {
+            let h = Math.floor(mins / 60);
+            let m = mins % 60;
+            if (h >= 24) h = h % 24;
+            const hh = String(h).padStart(2, '0');
+            const mm = String(m).padStart(2, '0');
+            return `${hh}:${mm}`;
+        }
+
+        // Form Submission Logic
+        document.getElementById('planForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const startTime = document.getElementById('startTime').value;
+            const endTime = document.getElementById('endTime').value;
+            const rawInput = document.getElementById('rawInput').value.trim();
+
+            if (!rawInput) return;
+
+            // UI state: loading
+            document.getElementById('emptyState').style.display = 'none';
+            document.getElementById('resultContent').style.display = 'none';
+            document.getElementById('loading').style.display = 'flex';
+
+            // Simulate generation delay
+            setTimeout(() => {
+                generateSchedule(startTime, endTime, rawInput);
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('resultContent').style.display = 'block';
+            }, 600);
+        });
+
+        // Parser & Schedule Builder
+        function generateSchedule(startStr, endStr, rawText) {
+            let startMins = timeToMinutes(startStr);
+            let endMins = timeToMinutes(endStr);
+
+            if (endMins <= startMins) {
+                endMins += 24 * 60; // Handle overnight range
+            }
+
+            const totalAvailableMins = endMins - startMins;
+
+            // Parse text lines
+            const lines = rawText.split('\n').map(l => l.replace(/^[-*•\d.\s]+/, '').trim()).filter(l => l.length > 0);
+
+            if (lines.length === 0) return;
+
+            // Parse explicit durations or assign defaults
+            let tasks = lines.map(line => {
+                let duration = 60; // default 60 mins
+                
+                // Match patterns like '1시간', '30분', '1.5시간', '2시간 30분'
+                const hourMatch = line.match(/(\d+(?:\.\d+)?)\s*시간/);
+                const minMatch = line.match(/(\d+)\s*분/);
+
+                if (hourMatch && minMatch) {
+                    duration = parseFloat(hourMatch[1]) * 60 + parseInt(minMatch[1]);
+                } else if (hourMatch) {
+                    duration = parseFloat(hourMatch[1]) * 60;
+                } else if (minMatch) {
+                    duration = parseInt(minMatch[1]);
+                } else {
+                    // Smart duration estimation based on keywords
+                    if (line.includes('점심') || line.includes('저녁') || line.includes('식사') || line.includes('밥')) {
+                        duration = 60;
+                    } else if (line.includes('산책') || line.includes('청소') || line.includes('장보기') || line.includes('샤워')) {
+                        duration = 45;
+                    } else if (line.includes('휴식') || line.includes('커피') || line.includes('티타임')) {
+                        duration = 30;
+                    } else if (line.includes('공부') || line.includes('작업') || line.includes('미팅') || line.includes('운동')) {
+                        duration = 90;
+                    }
+                }
+
+                return {
+                    name: line,
+                    duration: duration
+                };
+            });
+
+            // Adjust task durations to fit within available time window
+            let sumDuration = tasks.reduce((acc, t) => acc + t.duration, 0);
+
+            // Add short rest buffers (10 min) between tasks if possible
+            const bufferTime = 10;
+            const totalBufferNeeded = (tasks.length - 1) * bufferTime;
+
+            if (sumDuration + totalBufferNeeded > totalAvailableMins) {
+                // Scale down durations proportionally
+                const scale = (totalAvailableMins - totalBufferNeeded) / sumDuration;
+                tasks.forEach(t => {
+                    t.duration = Math.max(20, Math.floor(t.duration * scale)); // minimum 20 mins
+                });
+            }
+
+            // Build Timeline Schedule
+            let currentMins = startMins;
+            const timelineContainer = document.getElementById('timelineContainer');
+            timelineContainer.innerHTML = '';
+
+            tasks.forEach((task, index) => {
+                const taskStart = minutesToTime(currentMins);
+                currentMins += task.duration;
+                const taskEnd = minutesToTime(currentMins);
+
+                // Add main task element
+                const itemHTML = `
+                    <div class="timeline-item">
+                        <div class="time-badge">${taskStart} - ${taskEnd}</div>
+                        <div class="task-card">
+                            <div class="task-title">${task.name}</div>
+                            <div class="task-desc">목표 시간: 약 ${task.duration}분 진행</div>
+                        </div>
+                    </div>
+                `;
+                timelineContainer.insertAdjacentHTML('beforeend', itemHTML);
+
+                // Add break/transition time except after last task
+                if (index < tasks.length - 1 && currentMins + bufferTime <= endMins) {
+                    const breakStart = minutesToTime(currentMins);
+                    currentMins += bufferTime;
+                    const breakEnd = minutesToTime(currentMins);
+
+                    const breakHTML = `
+                        <div class="timeline-item">
+                            <div class="time-badge" style="background: var(--gray-200); color: var(--gray-600);">${breakStart} - ${breakEnd}</div>
+                            <div class="task-card" style="border-left-color: var(--gray-400); background: #ffffff; opacity: 0.85;">
+                                <div class="task-title" style="font-size:0.85rem; color: var(--gray-600);"><i class="fa-solid fa-mug-hot"></i> 휴식 및 다음 준비</div>
+                            </div>
+                        </div>
+                    `;
+                    timelineContainer.insertAdjacentHTML('beforeend', breakHTML);
+                }
+            });
+
+            // Fill remaining time if schedule ends early
+            if (currentMins < endMins) {
+                const freeStart = minutesToTime(currentMins);
+                const freeEnd = minutesToTime(endMins);
+                const freeHTML = `
+                    <div class="timeline-item">
+                        <div class="time-badge" style="background: #FEF3C7; color: #D97706;">${freeStart} - ${freeEnd}</div>
+                        <div class="task-card" style="border-left-color: var(--accent); background: #FFFBEB;">
+                            <div class="task-title" style="color: #B45309;"><i class="fa-solid fa-sparkles"></i> 자유 시간 및 하루 마무리</div>
+                            <div class="task-desc">오늘의 계획 완수를 축하하며 편안히 여가를 즐기세요!</div>
+                        </div>
+                    </div>
+                `;
+                timelineContainer.insertAdjacentHTML('beforeend', freeHTML);
+            }
+        }
+
+        // Copy schedule to clipboard as text
+        function copySchedule() {
+            const items = document.querySelectorAll('.timeline-item');
+            if (items.length === 0) return;
+
+            let text = "⚡ [파워계획표] 오늘의 하루 일정 ⚡\n\n";
+            items.forEach(item => {
+                const time = item.querySelector('.time-badge').innerText;
+                const title = item.querySelector('.task-title').innerText;
+                text += `${time} | ${title}\n`;
+            });
+
+            navigator.clipboard.writeText(text).then(() => {
+                alert('계획표가 클립보드에 복사되었습니다!');
+            }).catch(() => {
+                alert('복사에 실패했습니다. 직접 드래그하여 복사해 주세요.');
+            });
+        }
+    </script>
+</body>
+</html>
+"""
+
+with open("index.html", "w", encoding="utf-8") as f:
+    f.write(html_code)
+
+print("HTML file generated successfully.")
